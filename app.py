@@ -1,4 +1,4 @@
-#whatsapp Analyser
+#Whatsapp Analyser
 
 import streamlit as st
 import pandas as pd
@@ -15,19 +15,12 @@ uploaded_file = st.sidebar.file_uploader("Choose a file")
 if uploaded_file:
 
     bytes_data = uploaded_file.getvalue()
-    # st.write(bytes_data)
-
-
     stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-    # st.write(stringio)
-
-
     string_data = StringIO.read(stringio)
-    # st.write(string_data)
 
     df = preprocessing.preprocessor(string_data)
-    print(type(df))
-    st.dataframe(df)
+
+
 
     user_list=df['users'].unique().tolist()
     user_list.sort()
@@ -35,13 +28,13 @@ if uploaded_file:
 
 
     selected_user = st.sidebar.selectbox("Show Analysis Based On:",user_list)
-
+    st.title('Top Statistics')
 
     if st.sidebar.button("Analyse"):
         number_of_messages,words,num_media,links = show.filtering(selected_user, df)
         
         column1 , column2 , column3, column4 = st.columns(4)
-
+        
         with column1:
             st.header("No. of Messages")
             st.title(number_of_messages)
@@ -57,12 +50,24 @@ if uploaded_file:
         with column4:
             st.header("Total Links")
             st.title(links)
+        
+
+        
+
+
+
 
         if selected_user == 'Overall':
             st.title("Most Active Users")
             busiest_users,new_df = show.busy_number(df)
             fig,ax = plt.subplots()
         
+            timeline = show.monthy_timeline(selected_user , df)
+
+            fig,ax = plt.subplots()
+            ax.plot(timeline['time'],timeline['user_message'])
+            plt.xticks(rotation = 'vertical')
+            st.pyplot(fig)
 
             col1,col2 = st.columns(2)
 
@@ -75,7 +80,15 @@ if uploaded_file:
             with col2:
                 st.dataframe(new_df)
 
-        most_common_df = show.most_common_words(selected_user,df)           
-        st.dataframe(most_common_df)
+        most_common_df = show.most_common_words(selected_user,df)        
+
+        fig , ax = plt.subplots()
+
+        ax.bar(most_common_df[0],most_common_df[1]) 
+        plt.xticks(rotation='vertical')
+
+        st.title('Most Common Words')
+        st.pyplot(fig)  
+
         
 

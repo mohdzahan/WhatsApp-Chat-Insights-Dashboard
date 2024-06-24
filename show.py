@@ -48,27 +48,41 @@ def busy_number(df):
     df= round((df['users'].value_counts()/df.shape[0])*100,2).reset_index()
     return count_user,df
 
+
 def most_common_words(selected_user,df):
 
     f= open("stopwords.txt",'r')
     stop_words = f.read()
 
-    if selected_user!='Overall':
+    if selected_user!='Overall':     
         df= df[df['users']==selected_user]
-
         tempo = df[df['users'] != 'group_notification']
+        
         tempo = tempo[tempo['user_message'] != '<Media omitted>\n']
-
-        words= []
+        
+        words=[]
 
         for message in tempo['user_message']:
             for word in message.lower().split():
                 if word not in stop_words:
                     words.append(word)
         most_common_df= pd.DataFrame(Counter(words).most_common(20))
-        return most_common_df
+
+        return pd.DataFrame(most_common_df)
+    
+def monthy_timeline(selected_user , df):
+        if selected_user!='Overall':     
+            df= df[df['users']==selected_user]
+
+        timeline= df.groupby(['year','month_number','month']).count()['user_message'].reset_index()
 
 
+        time = []
+        for i in range(timeline.shape[0]):
+            time.append(timeline['month'][i] + "-" + str(timeline['year'][i]))
+        timeline['time']  = time
+
+        return timeline
 
 
 

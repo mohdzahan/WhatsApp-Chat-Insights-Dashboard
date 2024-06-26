@@ -47,4 +47,6 @@ def preprocessor(data):
     df['minute'] = df['message_dates'].dt.minute
     df['hour'] = df['message_dates'].dt.hour
     df['month_number'] = df['message_dates'].dt.month
+    df['date'] = df['message_dates'].dt.date
+    df['day_name'] = df['message_dates'].dt.day_name()
     return df

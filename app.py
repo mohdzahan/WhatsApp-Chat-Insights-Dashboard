@@ -36,20 +36,16 @@ if uploaded_file:
         column1 , column2 , column3, column4 = st.columns(4)
         
         with column1:
-            st.header("No. of Messages")
-            st.title(number_of_messages)
+            st.metric(label="No. of Messages", value=number_of_messages)
 
         with column2:
-            st.header("Total Words")
-            st.title(words)
+            st.metric(label="Total Words", value=words)
 
         with column3:
-            st.header("Total Media")
-            st.title(num_media)
+            st.metric(label="Total Media", value=num_media)
 
         with column4:
-            st.header("Total Links")
-            st.title(links)
+            st.metric(label="Total Links", value=links)
         
 
         
@@ -58,10 +54,8 @@ if uploaded_file:
 
 
         if selected_user == 'Overall':
-            st.title("Most Active Users")
-            busiest_users,new_df = show.busy_number(df)
-            fig,ax = plt.subplots()
-        
+
+            st.title("Most Usages in Month")
             timeline = show.monthy_timeline(selected_user , df)
 
             fig,ax = plt.subplots()
@@ -69,26 +63,60 @@ if uploaded_file:
             plt.xticks(rotation = 'vertical')
             st.pyplot(fig)
 
-            col1,col2 = st.columns(2)
-
-            with col1:
-                ax.bar(busiest_users.index, busiest_users.values,color ='green')
-                plt.xticks(rotation='vertical')
-                st.pyplot(fig)
+            st.title("Most Active Users")
+            busiest_users,new_df = show.busy_number(df)
+            fig,ax = plt.subplots()
+        
 
 
-            with col2:
-                st.dataframe(new_df)
+
+            ax.bar(busiest_users.index, busiest_users.values,color ='green')
+            plt.xticks(rotation='vertical')
+            st.pyplot(fig)
+
+
+
+
 
         most_common_df = show.most_common_words(selected_user,df)        
 
         fig , ax = plt.subplots()
 
+        
         ax.bar(most_common_df[0],most_common_df[1]) 
         plt.xticks(rotation='vertical')
 
         st.title('Most Common Words')
         st.pyplot(fig)  
 
-        
+        #daily timeline graph
 
+        st.title("Daily Timeline")
+        daily_timeline  =show.daily_timeline(selected_user,df)
+
+
+        fig, ax =plt.subplots()
+        ax.plot(daily_timeline['date'],daily_timeline['user_message'],color='green')
+        plt.xticks(rotation = 'vertical')
+        st.pyplot(fig)
+
+
+        st.title("Activity Map")
+
+        coll1,coll2 = st.columns(2)
+
+        with coll1:
+            st.header("Most Busy Day")
+            busy_day = show.activity_map(selected_user,df)
+
+            fig,ax = plt.subplots()
+            ax.bar(busy_day.index,busy_day.values)
+            st.pyplot(fig)
+
+        with coll2:
+            st.header("Most Busy Month")
+            busy_month = show.activity_map_month(selected_user,df)
+
+            fig,ax = plt.subplots()
+            ax.bar(busy_month.index,busy_month.values)
+            st.pyplot(fig)

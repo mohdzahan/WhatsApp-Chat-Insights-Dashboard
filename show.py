@@ -42,19 +42,17 @@ def filtering(selected_user,df):
 
         return num_messages,len(words),num_media,len(links)
 
-
 def busy_number(df):
     count_user = df['users'].value_counts().head()
     df= round((df['users'].value_counts()/df.shape[0])*100,2).reset_index()
     return count_user,df
-
 
 def most_common_words(selected_user,df):
 
     f= open("stopwords.txt",'r')
     stop_words = f.read()
 
-    if selected_user!='Overall':     
+    if selected_user != 'Overall':     
         df= df[df['users']==selected_user]
         tempo = df[df['users'] != 'group_notification']
         
@@ -70,6 +68,9 @@ def most_common_words(selected_user,df):
 
         return pd.DataFrame(most_common_df)
     
+    
+    
+    
 def monthy_timeline(selected_user , df):
         if selected_user!='Overall':     
             df= df[df['users']==selected_user]
@@ -83,6 +84,28 @@ def monthy_timeline(selected_user , df):
         timeline['time']  = time
 
         return timeline
+
+def daily_timeline(selected_user,df):
+    if selected_user != 'Overall':
+        df = df[df['users']==selected_user]
+
+        daily = df.groupby('date').count()['user_message'].reset_index()
+        
+        return daily
+
+def activity_map(selected_user, df):
+    if selected_user != 'Overall':
+        df = df[df['users']==selected_user]
+    
+    return df['day_name'].value_counts()
+
+def activity_map_month(selected_user, df):
+    if selected_user != 'Overall':
+        df = df[df['users']==selected_user]
+    
+    return df['month'].value_counts()
+
+
 
 
 

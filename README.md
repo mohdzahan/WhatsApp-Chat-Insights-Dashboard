@@ -1,4 +1,4 @@
-# WhatsApp Chat Analyzer
+# WhatsApp Chat Insights Dashboard
 
 This project analyzes WhatsApp chat data to extract insights like the most active users, commonly used words, and media shared. It presents these findings in an interactive dashboard using **Streamlit**.
 
